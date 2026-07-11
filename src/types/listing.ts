@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb";
 
+export type ListingApprovalStatus = "pending" | "approved" | "rejected";
+
 export interface Listing {
   _id?: ObjectId;
   title: string;
@@ -11,8 +13,10 @@ export interface Listing {
   bathrooms: number;
   amenities: string[];
   images: string[];
-  ownerId: string; // sent by the client — no server-side verification
+  ownerId: string;
   isAvailable: boolean;
+  approvalStatus: ListingApprovalStatus;
+  rejectionReason?: string;
   createdAt: Date;
   updatedAt: Date;
 }
