@@ -7,8 +7,11 @@ export interface Booking {
   listingId: string;
   tenantId: string;
   ownerId: string;
-  status: BookingStatus;
+  tenantName: string;
+  tenantPhone: string;
+  moveInDate?: string; // ISO date string, e.g. "2026-08-01"
   message?: string;
+  status: BookingStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,5 +19,8 @@ export interface Booking {
 export interface CreateBookingInput {
   listingId: string;
   tenantId: string;
+  tenantName: string;
+  tenantPhone: string;
+  moveInDate?: string;
   message?: string;
 }

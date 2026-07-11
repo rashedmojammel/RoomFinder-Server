@@ -38,6 +38,14 @@ export async function createBooking(req: Request, res: Response): Promise<void> 
     res.status(400).json({ error: { message: "tenantId is required", code: "BAD_REQUEST" } });
     return;
   }
+  if (typeof body.tenantName !== "string" || body.tenantName.trim() === "") {
+    res.status(400).json({ error: { message: "tenantName is required", code: "BAD_REQUEST" } });
+    return;
+  }
+  if (typeof body.tenantPhone !== "string" || body.tenantPhone.trim() === "") {
+    res.status(400).json({ error: { message: "tenantPhone is required", code: "BAD_REQUEST" } });
+    return;
+  }
 
   const db = getDb();
   const listing = await db.collection<Listing>(LISTINGS_COLLECTION).findOne({ _id: new ObjectId(body.listingId) });
@@ -74,8 +82,11 @@ export async function createBooking(req: Request, res: Response): Promise<void> 
     listingId: body.listingId,
     tenantId: body.tenantId,
     ownerId: listing.ownerId,
+    tenantName: body.tenantName.trim(),
+    tenantPhone: body.tenantPhone.trim(),
+    moveInDate: typeof body.moveInDate === "string" && body.moveInDate.trim() !== "" ? body.moveInDate : undefined,
+    message: typeof body.message === "string" && body.message.trim() !== "" ? body.message.trim() : undefined,
     status: "pending",
-    message: typeof body.message === "string" ? body.message : undefined,
     createdAt: now,
     updatedAt: now,
   };
