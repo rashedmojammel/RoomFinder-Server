@@ -189,6 +189,16 @@ export async function updateListing(req: Request, res: Response): Promise<void> 
   if (Array.isArray(body.images)) update.images = body.images;
   if (typeof body.isAvailable === "boolean") update.isAvailable = body.isAvailable;
 
+  // A pure availability toggle shouldn't force re-review. Any real content
+  // change sends it back to "pending" so admin approval can't be bypassed by editing.
+  const isOnlyAvailabilityToggle =
+    Object.keys(body).length === 1 && Object.prototype.hasOwnProperty.call(body, "isAvailable");
+
+  if (!isOnlyAvailabilityToggle && existing.approvalStatus !== "pending") {
+    update.approvalStatus = "pending";
+    update.rejectionReason = undefined;
+  }
+
   await collection.updateOne({ _id: new ObjectId(id) }, { $set: update });
   const updated = await collection.findOne({ _id: new ObjectId(id) });
 
@@ -267,4 +277,22 @@ export async function deleteListing(req: Request, res: Response): Promise<void> 
   await collection.deleteOne({ _id: new ObjectId(id) });
 
   res.status(200).json({ message: "Listing deleted" });
+}
+// Admin — every listing, every status, optional ?status= filter
+export async function getAllListingsAdmin(req: Request, res: Response): Promise<void> {
+  const db = getDb();
+  const { status } = req.query;
+
+  const filter: Record<string, unknown> = {};
+  if (typeof status === "string" && ["pending", "approved", "rejected"].includes(status)) {
+    filter.approvalStatus = status;
+  }
+
+  const listings = await db
+    .collection<Listing>(COLLECTION)
+    .find(filter)
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  res.status(200).json({ listings });
 }

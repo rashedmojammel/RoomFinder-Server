@@ -151,3 +151,10 @@ export async function updateBookingStatus(req: Request, res: Response): Promise<
 
   res.status(200).json({ booking: updated });
 }
+export async function getAllBookings(req: Request, res: Response): Promise<void> {
+  const db = getDb();
+  const bookings = await db.collection<Booking>(COLLECTION).find({}).sort({ createdAt: -1 }).toArray();
+  const withListings = await attachListings(db, bookings);
+
+  res.status(200).json({ bookings: withListings });
+}

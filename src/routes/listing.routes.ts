@@ -5,6 +5,7 @@ import {
   getListingById,
   getOwnerListings,
   getPendingListings,
+  getAllListingsAdmin,
   createListing,
   updateListing,
   updateListingApproval,
@@ -16,6 +17,7 @@ const router = Router();
 router.get("/", asyncHandler(getListings));
 router.get("/owner/:ownerId", asyncHandler(getOwnerListings));
 router.get("/admin/pending", asyncHandler(getPendingListings));
+router.get("/admin/all", asyncHandler(getAllListingsAdmin));
 router.get("/:id", asyncHandler(getListingById));
 
 router.post("/", asyncHandler(createListing));
