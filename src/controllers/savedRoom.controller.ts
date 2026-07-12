@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { getDb } from "../lib/db";
 import type { SavedRoom } from "../types/savedRoom";
 import type { Listing } from "../types/listing";
@@ -22,8 +22,8 @@ export async function getSavedRooms(req: Request, res: Response): Promise<void> 
     ? await db.collection<Listing>(LISTINGS_COLLECTION).find({ _id: { $in: ids } }).toArray()
     : [];
 
-  const listingMap = new Map(listings.map((l) => [l._id!.toString(), l]));
-  const ordered = saved.map((s) => listingMap.get(s.listingId)).filter((l): l is Listing => Boolean(l));
+  const listingMap = new Map(listings.map((l) => [l._id.toString(), l]));
+  const ordered = saved.map((s) => listingMap.get(s.listingId)).filter((l): l is WithId<Listing> => Boolean(l));
 
   res.status(200).json({ listings: ordered });
 }
