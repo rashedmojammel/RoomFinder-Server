@@ -4,8 +4,11 @@ import "dotenv/config";
 import listingRoutes from "./routes/listing.routes";
 import savedRoomRoutes from "./routes/savedRoom.routes";
 import bookingRoutes from "./routes/booking.routes";
+import reviewRoutes from "./routes/review.routes";
+// import reviewRoutes from "./routes/review.routes";
 
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const app: Application = express();
 
@@ -30,7 +33,9 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/rooms", listingRoutes);
 app.use("/api/bookings", bookingRoutes);
-app.use("/api/saved-rooms",savedRoomRoutes);
+app.use("/api/saved-rooms", savedRoomRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({ error: { message: `Route not found: ${req.method} ${req.originalUrl}`, code: "NOT_FOUND" } });

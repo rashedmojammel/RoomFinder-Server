@@ -145,13 +145,14 @@ export async function createListing(req: Request, res: Response): Promise<void> 
 
   const now = new Date();
   const listing: Listing = {
-    ...result.data,
-    isAvailable: true,
-    approvalStatus: "pending",
-    createdAt: now,
-    updatedAt: now,
-  };
-
+  ...result.data,
+  isAvailable: true,
+  approvalStatus: "pending",
+  ratingAverage: 0,
+  reviewCount: 0,
+  createdAt: now,
+  updatedAt: now,
+};
   const db = getDb();
   const insertResult = await db.collection<Listing>(COLLECTION).insertOne(listing);
 

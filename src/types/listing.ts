@@ -15,8 +15,10 @@ export interface Listing {
   images: string[];
   ownerId: string;
   isAvailable: boolean;
-  approvalStatus: ListingApprovalStatus;
+  approvalStatus: "pending" | "approved" | "rejected";
   rejectionReason?: string;
+  ratingAverage: number; // cached, recomputed whenever a review changes
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
